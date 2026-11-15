@@ -40,7 +40,7 @@ a { color: inherit; text-decoration: none; }
 .wall svg { width: 100%; height: 100%; display: block; }
 .pills {
   position: absolute; top: 12px; left: 12px; right: 12px; z-index: 5;
-  display: flex; gap: 8px; justify-content: flex-end; overflow-x: auto; scrollbar-width: none;
+  display: flex; gap: 8px; justify-content: flex-start; overflow-x: auto; scrollbar-width: none;
 }
 .pills::-webkit-scrollbar { display: none; }
 .pill {
@@ -48,6 +48,22 @@ a { color: inherit; text-decoration: none; }
   font-size: 13px; font-weight: 500; box-shadow: var(--shadow); white-space: nowrap;
 }
 .pill.on { background: var(--ink); color: #fff; }
+
+/* Botón de música: apagado por defecto pero imposible de no ver */
+.pills { padding: 8px 4px; margin: -8px -4px; }
+.music-btn { display: inline-flex; align-items: center; gap: 7px; background: var(--tomato); color: #fff; font-weight: 700; }
+.music-btn.invite { animation: invite 1.8s ease-out infinite; }
+.music-btn.on { background: var(--ink); }
+@keyframes invite {
+  0%   { box-shadow: var(--shadow), 0 0 0 0 rgba(232, 71, 47, .55); }
+  70%  { box-shadow: var(--shadow), 0 0 0 10px rgba(232, 71, 47, 0); }
+  100% { box-shadow: var(--shadow), 0 0 0 0 rgba(232, 71, 47, 0); }
+}
+.eq { display: inline-flex; align-items: flex-end; gap: 2px; height: 12px; }
+.eq i { width: 3px; height: 100%; background: var(--butter); border-radius: 1px; transform-origin: bottom; animation: eq .9s ease-in-out infinite; }
+.eq i:nth-child(2) { animation-delay: -.3s; }
+.eq i:nth-child(3) { animation-delay: -.6s; }
+@keyframes eq { 0%, 100% { transform: scaleY(.3); } 50% { transform: scaleY(1); } }
 
 .sign {
   width: max-content; margin: 0 auto; text-align: center;
@@ -299,7 +315,7 @@ a { color: inherit; text-decoration: none; }
   .mobile-bar { display: none; }
   .toast { bottom: 28px; }
   .top { padding-top: 22px; }
-  .pills { left: auto; }
+  .pills { left: auto; justify-content: flex-end; }
   .sign h1 { font-size: 54px; }
   .sign { padding: 14px 36px 10px; }
   .shelf-scroll { overflow: visible; }

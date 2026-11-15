@@ -157,7 +157,10 @@ export default function Shop() {
 
   const reset = () => { setStems([]); setRibbon(null); setNote(null); setHistory([]); setNewest(null); setModal(null); };
 
-  const toggleMusic = () => { const on = !music; setMusicOn(on); setMusic(on); };
+  // La música arranca apagada (los navegadores bloquean el audio automático);
+  // el botón late suavemente hasta que el usuario lo prueba una vez.
+  const [musicTried, setMusicTried] = useState(false);
+  const toggleMusic = () => { const on = !music; setMusicOn(on); setMusic(on); setMusicTried(true); };
 
   const signOut = async () => { await supabase?.auth.signOut(); setUser(null); say('Sesión cerrada'); };
 
@@ -174,8 +177,13 @@ export default function Shop() {
       <header className="top">
         <Wall />
         <div className="pills">
+          <button
+            className={`pill music-btn ${music ? 'on' : ''} ${musicTried ? '' : 'invite'}`}
+            onClick={toggleMusic} aria-pressed={music} aria-label={music ? 'Pausar música' : 'Activar música'}
+          >
+            {music ? <><span className="eq" aria-hidden="true"><i /><i /><i /></span>Sonando · pausar</> : '🎵 Activa la música'}
+          </button>
           <button className="pill" onClick={() => setModal('how')}>¿Cómo funciona?</button>
-          <button className={`pill ${music ? 'on' : ''}`} onClick={toggleMusic} aria-pressed={music}>{music ? '♪ Música on' : '♪ Música'}</button>
           <Link className="pill" href="/mis-ramos">Mis ramos</Link>
           {user && <button className="pill" onClick={signOut} title="Cerrar sesión">👤 {user.split('@')[0]} · salir</button>}
         </div>
