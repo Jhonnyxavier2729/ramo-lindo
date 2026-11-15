@@ -14,7 +14,7 @@ export default function MisRamos() {
       <header className="orders-head">
         <Link href="/" className="pill">← Volver a la tienda</Link>
         <h1>Mis ramos</h1>
-        {state && <p className="sub">{state.mode === 'cloud' ? 'Guardados en tu cuenta.' : 'Modo demo: guardados en este navegador.'}</p>}
+        {state && <p className="sub">Los ramos que has enviado.</p>}
       </header>
       {!state && <p className="sub center-text">Cargando…</p>}
       {state && !state.orders.length && (

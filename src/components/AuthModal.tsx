@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState, type FormEvent } from 'react';
-import { supabase, isDemo } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase';
 import { money } from '@/lib/catalog';
 import { Modal } from './Modal';
 
@@ -37,7 +37,7 @@ export function AuthModal({ open, total, onClose, onAuthed }: {
     setBusy(true); setErr('');
     const { error } = await supabase.auth.signInAnonymously();
     setBusy(false);
-    if (error) return setErr('El acceso como invitado no está activo en Supabase. ' + error.message);
+    if (error) return setErr('El acceso como invitado no está disponible ahora. Intenta con tu correo.');
     onAuthed('invitado');
   };
 
@@ -57,7 +57,6 @@ export function AuthModal({ open, total, onClose, onAuthed }: {
         <p className="err" role="alert">{err}</p>
         <button type="submit" className="btn wide" disabled={busy}>{busy ? 'Un momento…' : mode === 'login' ? 'Entrar y enviar' : 'Crear cuenta y enviar'}</button>
       </form>
-      {isDemo && <p className="demo-tag">Modo demo: sin claves de Supabase el pedido se guarda en este navegador.</p>}
     </Modal>
   );
 }

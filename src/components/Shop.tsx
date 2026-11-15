@@ -255,7 +255,7 @@ export default function Shop() {
         <div className="big" aria-hidden="true">💐</div>
         <h2 id="done-title">¡Tu ramo va en camino!</h2>
         <p className="sub">{saved?.summary}</p>
-        <p className="sub">{saved?.mode === 'cloud' ? 'Guardado en tu cuenta.' : 'Guardado en este navegador (modo demo).'}</p>
+        <p className="sub">Lo encuentras cuando quieras en Mis ramos.</p>
         <div className="row center-row">
           <Link className="btn alt" href="/mis-ramos">Ver mis ramos</Link>
           <button className="btn" onClick={reset}>Armar otro ramo</button>
@@ -270,7 +270,6 @@ export default function Shop() {
           <li>Si quieres, escribe una nota a mano.</li>
           <li>Presiona <b>ENVIAR FLORES</b> en la caja registradora.</li>
         </ol>
-        <p className="sub">Proyecto de portafolio · Next.js, GSAP, Supabase y Vercel.</p>
       </Modal>
 
       <div className={`toast ${toast ? 'show' : ''}`} role="status">{toast}</div>
