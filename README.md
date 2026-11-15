@@ -9,7 +9,7 @@ Florería interactiva donde armas un ramo como en una tienda de verdad: tocas la
 - **Animaciones con GSAP**: entrada de la escena, vuelo de cada flor al ramo, tallos que crecen, total que "cuenta".
 - **Nota a mano** con `perfect-freehand` (funciona con dedo, mouse o lápiz) y se guarda como SVG.
 - **Caja registradora** con recibo que se imprime línea por línea.
-- **Música ambiental y efectos** con Howler. El audio se genera con `npm run audio`, sin archivos de terceros.
+- **Música de fondo alegre y opcional** (botón ♪) con Howler; sin sonidos en los clics. Se genera con `npm run audio`, sin archivos de terceros.
 - **Login con Supabase**: correo/contraseña sin confirmación por email, o **entrar como invitado** con un clic.
 - **Mis ramos**: historial de pedidos con la vista previa de cada ramo.
 - **Modo demo**: sin claves de Supabase todo funciona y los pedidos se guardan en `localStorage`.

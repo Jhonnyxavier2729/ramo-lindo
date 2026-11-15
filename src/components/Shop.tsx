@@ -7,7 +7,7 @@ import {
   FLOWERS, RIBBONS, MAX_STEMS, MIN_FOR_RIBBON, NOTE_PRICE, money, orderTotal, receiptLines,
   type FlowerId, type Note, type RibbonId, type Stem,
 } from '@/lib/catalog';
-import { playSfx, setMusic } from '@/lib/audio';
+import { setMusic } from '@/lib/audio';
 import { supabase } from '@/lib/supabase';
 import { saveOrder } from '@/lib/orders';
 import { FlowerHead } from './FlowerHead';
@@ -103,7 +103,7 @@ export default function Shop() {
 
   const addStem = (id: FlowerId, el: HTMLElement) => {
     if (n + flyers.length >= MAX_STEMS) return say('El ramo está lleno 💐');
-    playSfx('pop');
+
     const key = crypto.randomUUID();
     const to = bouquetRef.current!.getBoundingClientRect();
     setFlyers((f) => [...f, { key, id, from: el.getBoundingClientRect(), to }]);
@@ -118,7 +118,7 @@ export default function Shop() {
   const chooseRibbon = (id: RibbonId) => {
     if (ribbon === id) return;
     setHistory((h) => [...h, { t: 'ribbon', prev: ribbon }]);
-    setRibbon(id); playSfx('ding');
+    setRibbon(id);
   };
 
   const saveNote = (next: Note | null) => {
@@ -126,7 +126,7 @@ export default function Shop() {
     if (!next && !note) return;
     setHistory((h) => [...h, { t: 'note', prev: note }]);
     setNote(next);
-    if (next) { playSfx('ding'); say('Tu nota quedó entre las flores ✉️'); }
+    if (next) { say('Tu nota quedó entre las flores ✉️'); }
   };
 
   const undo = () => {
@@ -136,7 +136,7 @@ export default function Shop() {
     if (last.t === 'stem') setStems((s) => s.slice(0, -1));
     if (last.t === 'ribbon') setRibbon(last.prev);
     if (last.t === 'note') setNote(last.prev);
-    setNewest(null); playSfx('undo');
+    setNewest(null);
   };
 
   const finish = async (who: string) => {
@@ -146,12 +146,12 @@ export default function Shop() {
       mode: res.mode,
       summary: `${n} tallos${ribbon ? ', lazo ' + RIBBONS.find((r) => r.id === ribbon)!.name.toLowerCase() : ''}${note ? ' y tu nota' : ''} · ${money(total)}`,
     });
-    setModal('done'); playSfx('ding'); petals();
+    setModal('done'); petals();
   };
 
   const send = () => {
-    if (!n) { setShake((s) => s + 1); playSfx('undo'); return say('Primero elige algunas flores 🌷'); }
-    playSfx('ching');
+    if (!n) { setShake((s) => s + 1); return say('Primero elige algunas flores 🌷'); }
+
     if (user) finish(user); else setModal('auth');
   };
 
