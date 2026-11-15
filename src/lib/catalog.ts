@@ -9,28 +9,30 @@ export interface Stem { key: string; id: FlowerId; j: number; k: number }
 export interface Note { text: string; svg: string | null }
 
 export const FLOWERS: Flower[] = [
-  { id: 'rosa', name: 'Rosa de jardín', price: 8, crate: '#e8472f' },
-  { id: 'girasol', name: 'Girasol', price: 5, crate: '#3455db' },
-  { id: 'tulipan', name: 'Tulipán frambuesa', price: 6, crate: '#f6ead2' },
-  { id: 'margarita', name: 'Margarita', price: 4, crate: '#e8472f' },
-  { id: 'cosmos', name: 'Cosmos rosa', price: 5, crate: '#3455db' },
-  { id: 'lavanda', name: 'Lavanda', price: 6, crate: '#f6ead2' },
+// Precios por tallo en pesos colombianos (COP)
+  { id: 'rosa', name: 'Rosa de jardín', price: 7000, crate: '#e8472f' },
+  { id: 'girasol', name: 'Girasol', price: 6000, crate: '#3455db' },
+  { id: 'tulipan', name: 'Tulipán frambuesa', price: 9000, crate: '#f6ead2' },
+  { id: 'margarita', name: 'Margarita', price: 3500, crate: '#e8472f' },
+  { id: 'cosmos', name: 'Cosmos rosa', price: 4500, crate: '#3455db' },
+  { id: 'lavanda', name: 'Lavanda', price: 5000, crate: '#f6ead2' },
 ];
 
 export const RIBBONS: Ribbon[] = [
-  { id: 'coral', name: 'Coral', price: 3, color: '#ff6a3d', dark: '#c9441a' },
-  { id: 'cielo', name: 'Azul cielo', price: 3, color: '#5aa9ff', dark: '#2a6fc4' },
-  { id: 'fucsia', name: 'Fucsia', price: 3, color: '#ff4fa3', dark: '#c42a7a' },
+  { id: 'coral', name: 'Coral', price: 4000, color: '#ff6a3d', dark: '#c9441a' },
+  { id: 'cielo', name: 'Azul cielo', price: 4000, color: '#5aa9ff', dark: '#2a6fc4' },
+  { id: 'fucsia', name: 'Fucsia', price: 4000, color: '#ff4fa3', dark: '#c42a7a' },
 ];
 
-export const NOTE_PRICE = 2;
+export const NOTE_PRICE = 3000;
 export const MAX_STEMS = 15;
 export const MIN_FOR_RIBBON = 3;
 
 export const F = Object.fromEntries(FLOWERS.map((f) => [f.id, f])) as Record<FlowerId, Flower>;
 export const R = Object.fromEntries(RIBBONS.map((r) => [r.id, r])) as Record<RibbonId, Ribbon>;
 
-export const money = (n: number) => '$' + n.toFixed(2);
+/** Formato colombiano: $45.500 (punto de miles, sin decimales). Igual en servidor y navegador. */
+export const money = (n: number) => '$' + Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 
 export function orderTotal(stems: Pick<Stem, 'id'>[], ribbon: RibbonId | null, hasNote: boolean) {
   return stems.reduce((s, st) => s + F[st.id].price, 0) + (ribbon ? R[ribbon].price : 0) + (hasNote ? NOTE_PRICE : 0);
