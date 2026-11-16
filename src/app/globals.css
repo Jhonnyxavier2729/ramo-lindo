@@ -453,16 +453,38 @@ a { color: inherit; text-decoration: none; }
   box-shadow: 0 16px 40px rgba(31, 26, 58, .3); text-align: center;
 }
 .sc-sign span { font-family: var(--font-display), serif; font-size: 96px; line-height: .85; color: var(--tomato); text-shadow: 5px 5px 0 var(--cobalt); }
+/* Dedicatoria sobre una cinta tomate: se lee bien encima de los cuadros */
 .sc-for {
-  position: absolute; top: 312px; left: 0; right: 0; text-align: center;
-  font-family: var(--font-hand), cursive; font-size: 76px; color: #fff; text-shadow: 0 4px 0 var(--ink), 0 0 24px rgba(31, 26, 58, .5);
+  position: absolute; top: 318px; left: 50%; transform: translateX(-50%) rotate(-2deg); white-space: nowrap;
+  background: var(--tomato); color: var(--cream); border-radius: 999px; padding: 6px 48px 14px;
+  font-family: var(--font-display), serif; font-size: 58px; line-height: 1.15;
+  box-shadow: 0 8px 0 var(--tomato-d), 0 18px 30px rgba(31, 26, 58, .3);
 }
-.sc-bouquet { position: absolute; left: 50%; top: 395px; width: 300px; height: 400px; transform: translateX(-50%) scale(1.78); transform-origin: 50% 0; }
+.sc-bouquet { position: absolute; left: 50%; top: 405px; width: 300px; height: 400px; transform: translateX(-50%) scale(1.78); transform-origin: 50% 0; }
+/* Pie: detalle del ramo + link, sin precios */
 .sc-ticket {
-  position: absolute; left: 90px; right: 90px; bottom: 90px; display: flex; justify-content: space-between; align-items: center; gap: 24px;
-  background: #fff; border-radius: 22px; padding: 26px 40px; box-shadow: 0 10px 0 var(--butter-d);
+  position: absolute; left: 110px; right: 110px; bottom: 70px; display: flex; flex-direction: column; align-items: center; gap: 6px;
+  background: #fff; border-radius: 26px; padding: 24px 40px 26px; box-shadow: 0 10px 0 var(--butter-d); text-align: center;
 }
-.sc-details { font-size: 32px; font-weight: 500; }
-.sc-total { font-family: var(--font-led), monospace; font-size: 72px; line-height: 1; color: #16241b; }
-.sc-url { position: absolute; bottom: 32px; left: 0; right: 0; text-align: center; font-size: 26px; font-weight: 700; opacity: .7; }
+.sc-details { font-size: 30px; font-weight: 500; opacity: .75; }
+.sc-url { font-size: 36px; font-weight: 700; color: var(--cobalt); }
 .share-card *, .share-card *::before, .share-card *::after { animation: none !important; transition: none !important; }
+
+/* ---------- Rendimiento ---------- */
+/* Pared pre-renderizada (antes: filtro SVG en vivo) */
+.wall { background: #3455db url('/wall.webp') center top / cover no-repeat; }
+/* Sin desenfoque detrás de los modales: en celulares cuesta mucho repintar la página borrosa */
+.backdrop { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(31, 26, 58, .55); }
+/* La repisa y el mostrador se pintan por separado del resto */
+.top, .counter { contain: layout paint; }
+/* En celular la entrada animada con GSAP costaba ~2 s de CPU: aquí solo cae el letrero (CSS, va por GPU) */
+@media (max-width: 899px) and (prefers-reduced-motion: no-preference) {
+  .sign { animation: sign-drop .8s cubic-bezier(.2, 1.4, .4, 1) both; }
+}
+@keyframes sign-drop { from { transform: translateY(-120px) rotate(-8deg); opacity: 0; } to { transform: rotate(-1.5deg); opacity: 1; } }
+/* Hover de las cajas: se levantan caja y flores, la repisa y la etiqueta se quedan quietas */
+@media (hover: hover) {
+  .item:hover { transform: none; }
+  .bunch, .crate, .badge { transition: transform .2s ease; }
+  .item:hover .bunch, .item:hover .crate, .item:hover .badge { transform: translateY(-6px); }
+}

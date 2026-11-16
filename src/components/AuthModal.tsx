@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState, type FormEvent } from 'react';
-import { supabase } from '@/lib/supabase';
+import { getSupabase, hasSupabase } from '@/lib/supabase';
 import { money } from '@/lib/catalog';
 import { Modal } from './Modal';
 
@@ -19,7 +19,7 @@ export function CheckoutModal({ open, total, lines, signedIn, onClose, onConfirm
   onClose: () => void;
   onConfirm: (recipient: string, who?: string) => void;
 }) {
-  const needsAccount = !!supabase && !signedIn;
+  const needsAccount = hasSupabase && !signedIn;
   const [recipient, setRecipient] = useState('');
   const [useEmail, setUseEmail] = useState(false);
   const [mode, setMode] = useState<Mode>('login');
@@ -35,6 +35,7 @@ export function CheckoutModal({ open, total, lines, signedIn, onClose, onConfirm
   const sendDirect = () => onConfirm(to);
 
   const sendAsGuest = async () => {
+    const supabase = await getSupabase();
     if (!supabase) return onConfirm(to);
     setBusy(true); setErr('');
     const { error } = await supabase.auth.signInAnonymously();
@@ -45,6 +46,7 @@ export function CheckoutModal({ open, total, lines, signedIn, onClose, onConfirm
 
   const sendWithEmail = async (e: FormEvent) => {
     e.preventDefault();
+    const supabase = await getSupabase();
     if (!supabase) return;
     if (!/^\S+@\S+\.\S+$/.test(email)) return setErr('Escribe un correo válido.');
     if (pass.length < 6) return setErr('La contraseña necesita al menos 6 caracteres.');

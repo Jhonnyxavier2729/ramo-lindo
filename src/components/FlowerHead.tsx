@@ -1,3 +1,5 @@
+'use client';
+import { createContext, useContext } from 'react';
 import type { FlowerId } from '@/lib/catalog';
 
 // Ilustraciones vectoriales propias. viewBox centrado en (0,0); el tallo entra por abajo.
@@ -81,11 +83,31 @@ function Lavanda() {
 
 const MAP: Record<FlowerId, () => React.ReactElement> = { rosa: Rosa, girasol: Girasol, tulipan: Tulipan, margarita: Margarita, cosmos: Cosmos, lavanda: Lavanda };
 
+/**
+ * Rendimiento: cada flor se dibuja UNA vez en un sprite (<symbol>) y en la página se
+ * reutiliza con <use>. Así 40+ flores no multiplican cientos de nodos SVG.
+ * La tarjeta que se exporta a PNG necesita las flores completas (html-to-image no
+ * copia el sprite), por eso activa el modo "inline" con este contexto.
+ */
+export const InlineFlowers = createContext(false);
+
 export function FlowerHead({ id, className }: { id: FlowerId; className?: string }) {
+  const inline = useContext(InlineFlowers);
   const Comp = MAP[id];
   return (
     <svg className={className} viewBox="-50 -50 100 100" aria-hidden="true" overflow="visible">
-      <Comp />
+      {inline ? <Comp /> : <use href={`#fh-${id}`} />}
+    </svg>
+  );
+}
+
+export function FlowerSprite() {
+  return (
+    <svg width="0" height="0" style={{ position: 'absolute' }} aria-hidden="true" focusable="false">
+      {(Object.keys(MAP) as FlowerId[]).map((id) => {
+        const Comp = MAP[id];
+        return <symbol key={id} id={`fh-${id}`} viewBox="-50 -50 100 100" overflow="visible"><Comp /></symbol>;
+      })}
     </svg>
   );
 }

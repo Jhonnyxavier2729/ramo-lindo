@@ -8,7 +8,7 @@ import {
   type FlowerId, type Note, type RibbonId, type Stem,
 } from '@/lib/catalog';
 import { setMusic } from '@/lib/audio';
-import { supabase } from '@/lib/supabase';
+import { getSupabase, hasSupabase } from '@/lib/supabase';
 import { saveOrder } from '@/lib/orders';
 import { FlowerHead } from './FlowerHead';
 import { Bow } from './Bow';
@@ -81,17 +81,23 @@ export default function Shop() {
 
   // Sesión de Supabase (si está configurado)
   useEffect(() => {
-    if (!supabase) return;
+    if (!hasSupabase) return;
+    let unsub: (() => void) | undefined;
+    let alive = true;
     const label = (u: { email?: string; is_anonymous?: boolean } | undefined) => (u ? (u.is_anonymous ? 'invitado' : u.email ?? 'tú') : null);
-    supabase.auth.getSession().then(({ data }) => setUser(label(data.session?.user)));
-    const { data } = supabase.auth.onAuthStateChange((_e, s) => setUser(label(s?.user)));
-    return () => data.subscription.unsubscribe();
+    getSupabase().then((supabase) => {
+      if (!supabase || !alive) return;
+      supabase.auth.getSession().then(({ data }) => setUser(label(data.session?.user)));
+      const { data } = supabase.auth.onAuthStateChange((_e, s) => setUser(label(s?.user)));
+      unsub = () => data.subscription.unsubscribe();
+    });
+    return () => { alive = false; unsub?.(); };
   }, []);
 
   // Entrada animada de la escena
   useGSAP(() => {
     const mm = gsap.matchMedia();
-    mm.add('(prefers-reduced-motion: no-preference)', () => {
+    mm.add('(prefers-reduced-motion: no-preference) and (min-width: 900px)', () => {
       gsap.timeline({ defaults: { ease: 'back.out(1.6)', clearProps: 'transform,opacity' } })
         .from('.sign', { y: -140, rotation: -10, duration: 0.9, ease: 'bounce.out' })
         .from('.item', { y: 40, opacity: 0, stagger: 0.06, duration: 0.5 }, '-=0.4')
@@ -176,7 +182,7 @@ export default function Shop() {
   const [musicTried, setMusicTried] = useState(false);
   const toggleMusic = () => { const on = !music; setMusicOn(on); setMusic(on); setMusicTried(true); };
 
-  const signOut = async () => { await supabase?.auth.signOut(); setUser(null); say('Sesión cerrada'); };
+  const signOut = async () => { await (await getSupabase())?.auth.signOut(); setUser(null); say('Sesión cerrada'); };
 
   const step = !n ? 0 : n < MIN_FOR_RIBBON || !ribbon ? 1 : !note ? 2 : 3;
   const hint = [

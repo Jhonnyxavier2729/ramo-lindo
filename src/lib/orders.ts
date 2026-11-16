@@ -1,5 +1,5 @@
 'use client';
-import { supabase } from './supabase';
+import { getSupabase } from './supabase';
 import type { Note, RibbonId, Stem } from './catalog';
 
 export interface SavedOrder {
@@ -29,6 +29,7 @@ export async function saveOrder(input: { stems: Stem[]; ribbon: RibbonId | null;
     note_svg: input.note?.svg || null,
     total: input.total,
   };
+  const supabase = await getSupabase();
   if (supabase) {
     const { data: session } = await supabase.auth.getSession();
     if (session.session) {
@@ -42,6 +43,7 @@ export async function saveOrder(input: { stems: Stem[]; ribbon: RibbonId | null;
 }
 
 export async function listOrders(): Promise<{ orders: SavedOrder[]; mode: 'cloud' | 'demo' }> {
+  const supabase = await getSupabase();
   if (supabase) {
     const { data: session } = await supabase.auth.getSession();
     if (session.session) {

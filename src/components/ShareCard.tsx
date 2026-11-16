@@ -1,6 +1,7 @@
 import type { Ref } from 'react';
-import { R, money, type Note, type RibbonId, type Stem } from '@/lib/catalog';
+import { R, type Note, type RibbonId, type Stem } from '@/lib/catalog';
 import { Bouquet } from './Bouquet';
+import { InlineFlowers } from './FlowerHead';
 
 export interface ShareData {
   stems: Omit<Stem, 'key'>[];
@@ -21,6 +22,7 @@ export function ShareCard({ data, innerRef }: { data: ShareData; innerRef: Ref<H
 
   return (
     <div className="share-stage" aria-hidden="true">
+      <InlineFlowers.Provider value={true}>
       <div className="share-card" ref={innerRef}>
         <div className="sc-wall" />
         <div className="sc-sign"><span>Ramo<br />Lindo</span></div>
@@ -30,10 +32,10 @@ export function ShareCard({ data, innerRef }: { data: ShareData; innerRef: Ref<H
         </div>
         <div className="sc-ticket">
           <span className="sc-details">{details}</span>
-          <span className="sc-total">{money(data.total)}</span>
+          <span className="sc-url">Arma el tuyo en ramo-lindo.vercel.app</span>
         </div>
-        <p className="sc-url">ramo-lindo.vercel.app</p>
       </div>
+      </InlineFlowers.Provider>
     </div>
   );
 }
