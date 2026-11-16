@@ -32,7 +32,8 @@ export function ShareCard({ data, innerRef }: { data: ShareData; innerRef: Ref<H
         </div>
         <div className="sc-ticket">
           <span className="sc-details">{details}</span>
-          <span className="sc-url">Arma el tuyo en ramo-lindo.vercel.app</span>
+          <span className="sc-cta">Arma el tuyo en</span>
+          <span className="sc-url">ramo-lindo.vercel.app</span>
         </div>
       </div>
       </InlineFlowers.Provider>

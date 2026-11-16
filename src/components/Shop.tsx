@@ -10,7 +10,7 @@ import {
 import { setMusic } from '@/lib/audio';
 import { getSupabase, hasSupabase } from '@/lib/supabase';
 import { saveOrder } from '@/lib/orders';
-import { FlowerHead } from './FlowerHead';
+import { Bunch, FlowerHead } from './FlowerHead';
 import { Bow } from './Bow';
 import { Bouquet } from './Bouquet';
 import { Register, MobileBar } from './Register';
@@ -216,7 +216,7 @@ export default function Shop() {
                 <button key={f.id} className="item" onClick={(e) => addStem(f.id, e.currentTarget.querySelector('.bunch') as HTMLElement)} aria-label={`Agregar ${f.name}, ${money(f.price)}`}>
                   {count > 0 && <span className="badge" key={count}>{count}</span>}
                   <span className="bunch" aria-hidden="true">
-                    {[0, 1, 2, 3, 4].map((k) => <FlowerHead key={k} id={f.id} className={`b b${k}`} />)}
+                    <Bunch id={f.id} />
                   </span>
                   <span className="crate" style={{ '--c': f.crate } as CSSProperties} />
                   <span className="tag" style={{ '--r': `${i % 2 ? 2 : -2}deg` } as CSSProperties}><b>{f.name}</b>{money(f.price)}</span>

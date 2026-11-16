@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { canCopyImage, canShareFile, copyImage, download, fileFrom, renderPng, shareText } from '@/lib/share';
 import { Modal } from './Modal';
+import { FlowerHead } from './FlowerHead';
 import { ShareCard, type ShareData } from './ShareCard';
 
 type Status = 'idle' | 'working' | 'ready' | 'error';
@@ -70,21 +71,37 @@ export function ShareModal({ open, data, onClose }: { open: boolean; data: Share
       <h2 id="share-title">Exporta tu ramo</h2>
       <p className="sub">Guárdalo como imagen o compártelo donde quieras.</p>
 
-      <div className="share-preview">
-        {status === 'working' && <p className="share-wait">Preparando tu imagen…</p>}
+      <div className="share-body">
+      <div className={`share-preview ${status === 'working' ? 'loading' : ''}`}>
+        {status === 'working' && (
+          <div className="share-wait" role="status">
+            <FlowerHead id="margarita" className="spin" />
+            <span>Preparando tu imagen…</span>
+          </div>
+        )}
         {status === 'error' && <p className="share-wait">No pudimos crear la imagen. Intenta de nuevo.</p>}
         {status === 'ready' && preview && <img src={preview} alt="Vista previa de tu ramo" />}
       </div>
+      <div>
 
-      <div className="share-actions">
-        {nativeShare && <button className="btn wide send-btn" onClick={share} disabled={status !== 'ready'}>Compartir…</button>}
-        <button className={`btn wide ${nativeShare ? 'alt' : 'send-btn'}`} onClick={save} disabled={status !== 'ready'}>Descargar PNG</button>
-        <div className="share-row">
-          {copyOk && <button className="btn alt" onClick={copy} disabled={status !== 'ready'}>Copiar imagen</button>}
-          {!nativeShare && <button className="btn alt whatsapp" onClick={whatsapp} disabled={status !== 'ready'}>WhatsApp</button>}
+      {/* Los botones aparecen cuando ya sabemos qué soporta el dispositivo: así no "saltan" de color. */}
+      {status === 'ready' ? (
+        <div className="share-actions">
+          {nativeShare && <button className="btn wide send-btn" onClick={share}>Compartir…</button>}
+          <button className={`btn wide ${nativeShare ? 'alt' : 'send-btn'}`} onClick={save}>Descargar PNG</button>
+          <div className="share-row">
+            {copyOk && <button className="btn alt" onClick={copy}>Copiar imagen</button>}
+            {!nativeShare && <button className="btn alt whatsapp" onClick={whatsapp}>WhatsApp</button>}
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="share-actions" aria-hidden="true">
+          <span className="btn-skeleton" /><span className="btn-skeleton" /><span className="btn-skeleton" />
+        </div>
+      )}
       <p className="share-msg" role="status">{msg}</p>
+      </div>
+      </div>
 
       {open && data && createPortal(<ShareCard data={data} innerRef={cardRef} />, document.body)}
     </Modal>

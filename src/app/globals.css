@@ -488,3 +488,74 @@ a { color: inherit; text-decoration: none; }
   .bunch, .crate, .badge { transition: transform .2s ease; }
   .item:hover .bunch, .item:hover .crate, .item:hover .badge { transform: translateY(-6px); }
 }
+
+/* =========================================================
+   v2 visual: paleta de fondo más armónica, cajas sólidas,
+   ramilletes con tallo, follaje en el ramo
+   ========================================================= */
+/* Cajas sólidas: tablas horizontales + ranuras, sin transparencias */
+.crate {
+  -webkit-mask: none; mask: none; border: 0; border-radius: 6px; height: 48px;
+  background:
+    linear-gradient(rgba(0, 0, 0, .18), rgba(0, 0, 0, .18)) top / 100% 5px no-repeat,
+    repeating-linear-gradient(180deg, transparent 0 13px, rgba(0, 0, 0, .16) 13px 15px),
+    repeating-linear-gradient(90deg, var(--c) 0 14px, color-mix(in srgb, var(--c) 78%, #000) 14px 16px);
+  box-shadow: inset 0 3px 0 rgba(255, 255, 255, .35), 0 5px 0 rgba(31, 26, 58, .15);
+}
+/* Ramillete: flores con tallos que entran en la caja */
+.bunch { width: 100px; height: 96px; margin-bottom: -34px; }
+.bunch-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+/* Tallos del ramo: más gruesos y con dos hojas */
+.stalk { left: -2.5px; width: 5px; background: linear-gradient(90deg, #3f8a35, #5aa646 60%, #3f8a35); }
+.stalk::after { width: 22px; height: 10px; top: 52%; }
+.stalk::before {
+  content: ""; position: absolute; right: 3px; top: 32%; width: 18px; height: 8px;
+  border-radius: 100% 0 100% 0; background: #4f9a3d; transform: rotate(25deg);
+}
+/* Follaje de eucalipto detrás de las flores */
+.sprig { position: absolute; left: 0; bottom: 0; width: 60px; transform: translateX(-50%) rotate(var(--a)); transform-origin: 50% 100%; z-index: 0; }
+
+/* ---------- Exportar: carga más clara ---------- */
+.share-wait { display: grid; place-items: center; gap: 12px; }
+.share-wait .spin { width: 54px; height: 54px; animation: spin 1.4s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.share-preview.loading {
+  background: linear-gradient(110deg, rgba(255, 255, 255, .35) 30%, rgba(255, 255, 255, .75) 50%, rgba(255, 255, 255, .35) 70%) 0 0 / 300% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+@keyframes shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+
+/* Tarjeta exportada: link en su propia línea */
+.sc-ticket { gap: 2px; }
+.sc-cta { font-size: 30px; font-weight: 500; }
+.sc-url { display: block; font-size: 40px; }
+/* Modal de exportar: en escritorio, vista previa a la izquierda y botones a la derecha (sin scroll) */
+@media (min-width: 900px) {
+  .share-modal { width: min(780px, 100%); }
+  .share-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; align-items: center; }
+  .share-body .share-preview { max-height: 62vh; width: 100%; margin: 0; }
+}
+.btn-skeleton {
+  display: block; height: 48px; border-radius: 999px;
+  background: linear-gradient(110deg, rgba(255, 255, 255, .35) 30%, rgba(255, 255, 255, .75) 50%, rgba(255, 255, 255, .35) 70%) 0 0 / 300% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+.share-actions .btn { animation: pop .3s ease-out; }
+
+/* Pared rosa (elegida en lugar del azul) */
+:root { --wall: #ef7fae; }
+.wall { background-color: var(--wall); }
+.sc-wall { background: conic-gradient(var(--wall) 25%, var(--cream) 0 50%, var(--wall) 0 75%, var(--cream) 0) 0 0 / 150px 150px; }
+
+/* La franja entre la pared y el mostrador ahora es la cubierta del mostrador
+   (madera clara vista en perspectiva) en lugar de azulejos verdes que no se entendían */
+.backsplash {
+  border-bottom: 12px solid #e0a64a;
+  background:
+    linear-gradient(180deg, rgba(120, 60, 20, .28), transparent 22px),      /* sombra de la pared sobre la mesa */
+    repeating-linear-gradient(90deg, transparent 0 140px, rgba(150, 90, 40, .10) 140px 142px), /* uniones de tablas */
+    repeating-linear-gradient(180deg, rgba(255, 255, 255, .0) 0 9px, rgba(190, 120, 50, .08) 9px 11px), /* veta */
+    linear-gradient(180deg, #f2cf96, #f7dcae);
+  box-shadow: 0 6px 0 rgba(31, 26, 58, .08);
+}

@@ -40,5 +40,10 @@ export async function copyImage(blob: Blob) {
   await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
 }
 
+// Texto que acompaña la imagen: el link va solo en su propia línea para que WhatsApp
+// lo detecte bien y muestre la vista previa de la web.
 export const shareText = (recipient: string) =>
-  `${recipient ? `Un ramo para ${recipient} 💐` : 'Mira el ramo que armé 💐'} · Arma el tuyo en ${SITE_URL}`;
+  `${recipient ? `Un ramo para ${recipient} 💐` : 'Mira el ramo que armé 💐'}
+
+Arma el tuyo aquí:
+${SITE_URL}`;

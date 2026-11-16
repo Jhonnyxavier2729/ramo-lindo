@@ -101,6 +101,30 @@ export function FlowerHead({ id, className }: { id: FlowerId; className?: string
   );
 }
 
+// Ramillete de la caja: 5 flores con tallos que bajan hasta dentro de la caja.
+// [x, y, tamaño, giro] de cada cabeza dentro de un lienzo de 100×96.
+const BUNCH: [number, number, number, number][] = [
+  [20, 36, 40, -16], [80, 36, 40, 16], [36, 16, 42, -6], [64, 14, 42, 8], [50, 34, 44, 0],
+];
+const LAVENDER_BUNCH: [number, number, number, number][] = [
+  [22, 30, 50, -14], [78, 30, 50, 14], [38, 18, 56, -6], [62, 16, 56, 6], [50, 26, 58, 0],
+];
+
+export function Bunch({ id }: { id: FlowerId }) {
+  const spots = id === 'lavanda' ? LAVENDER_BUNCH : BUNCH;
+  return (
+    <svg className="bunch-svg" viewBox="0 0 100 96" aria-hidden="true" overflow="visible">
+      <g stroke="#3f8a35" strokeWidth="3.2" strokeLinecap="round" fill="none">
+        {spots.map(([x, y], i) => <path key={i} d={`M${x} ${y + 8} Q${(x + 50) / 2} ${y + 40} ${46 + i * 2} 96`} />)}
+      </g>
+      <path d="M30 70c-8-2-13-8-13-14 8 1 13 7 13 14zm40 0c8-2 13-8 13-14-8 1-13 7-13 14z" fill="#4f9a3d" />
+      {spots.map(([x, y, s, r], i) => (
+        <use key={i} href={`#fh-${id}`} x={x - s / 2} y={y - s / 2} width={s} height={s} transform={`rotate(${r} ${x} ${y})`} />
+      ))}
+    </svg>
+  );
+}
+
 export function FlowerSprite() {
   return (
     <svg width="0" height="0" style={{ position: 'absolute' }} aria-hidden="true" focusable="false">

@@ -33,6 +33,24 @@ function StemView({ stem, i, isNew }: { stem: Omit<Stem, 'key'>; i: number; isNe
   );
 }
 
+// Follaje (eucalipto) detrás de las flores: el ramo se ve lleno aunque tenga 1 o 2 tallos.
+const SPRIGS = [
+  { a: -30, L: 250 }, { a: 26, L: 240 }, { a: -12, L: 272 }, { a: 38, L: 215 }, { a: 8, L: 262 }, { a: -40, L: 210 },
+];
+function Sprig({ a, L }: { a: number; L: number }) {
+  const leaves = [];
+  for (let t = 0.5, i = 0; t < 0.99; t += 0.075, i++) {
+    const y = L * (1 - t), side = i % 2 ? 1 : -1;
+    leaves.push(<ellipse key={i} cx={30 + side * 9} cy={y} rx={11 - t * 3} ry={8.5 - t * 2} fill={i % 3 ? '#6fa88d' : '#5b977b'} transform={`rotate(${side * 25} ${30 + side * 9} ${y})`} />);
+  }
+  return (
+    <svg className="sprig" style={{ '--a': `${a}deg`, height: L } as CSSProperties} viewBox={`0 0 60 ${L}`} aria-hidden="true">
+      <path d={`M30 ${L}Q27 ${L / 2} 30 6`} stroke="#4e8a6c" strokeWidth="3" fill="none" strokeLinecap="round" />
+      {leaves}
+    </svg>
+  );
+}
+
 export function NoteCard({ note }: { note: Note }) {
   return (
     <div className="note-card">
@@ -62,6 +80,7 @@ export function Bouquet({
         <path d="M18 34 140 0l122 26-110 152h-24Z" fill="#b39cf5" />
       </svg>
       <div className="stems">
+        {stems.length > 0 && SPRIGS.slice(0, Math.min(SPRIGS.length, 2 + Math.ceil(stems.length / 2))).map((s, i) => <Sprig key={i} {...s} />)}
         {stems.map((s, i) => <StemView key={s.key ?? i} stem={s} i={i} isNew={!!newestKey && s.key === newestKey} />)}
       </div>
       {note && <div className="tucked"><NoteCard note={note} /></div>}
