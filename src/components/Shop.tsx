@@ -15,7 +15,7 @@ import { Bow } from './Bow';
 import { Bouquet } from './Bouquet';
 import { Register, MobileBar } from './Register';
 import { NoteModal } from './NoteModal';
-import { AuthModal } from './AuthModal';
+import { CheckoutModal } from './AuthModal';
 import { Modal } from './Modal';
 import { Wall } from './Wall';
 
@@ -63,7 +63,7 @@ export default function Shop() {
   const [music, setMusicOn] = useState(false);
   const [modal, setModal] = useState<null | 'note' | 'auth' | 'done' | 'how'>(null);
   const [user, setUser] = useState<string | null>(null);
-  const [saved, setSaved] = useState<{ mode: 'cloud' | 'demo'; summary: string } | null>(null);
+  const [saved, setSaved] = useState<{ mode: 'cloud' | 'demo'; summary: string; recipient: string } | null>(null);
   const [toast, setToast] = useState('');
   const [shake, setShake] = useState(0);
   const bouquetRef = useRef<HTMLDivElement>(null);
@@ -87,7 +87,7 @@ export default function Shop() {
   useGSAP(() => {
     const mm = gsap.matchMedia();
     mm.add('(prefers-reduced-motion: no-preference)', () => {
-      gsap.timeline({ defaults: { ease: 'back.out(1.6)' } })
+      gsap.timeline({ defaults: { ease: 'back.out(1.6)', clearProps: 'transform,opacity' } })
         .from('.sign', { y: -140, rotation: -10, duration: 0.9, ease: 'bounce.out' })
         .from('.item', { y: 40, opacity: 0, stagger: 0.06, duration: 0.5 }, '-=0.4')
         .from('.bouquet', { scale: 0.6, opacity: 0, duration: 0.6 }, '-=0.3')
@@ -139,20 +139,21 @@ export default function Shop() {
     setNewest(null);
   };
 
-  const finish = async (who: string) => {
-    setUser(who);
+  const finish = async (recipient: string, who?: string) => {
+    if (who) setUser(who);
     const res = await saveOrder({ stems, ribbon, note, total });
     setSaved({
       mode: res.mode,
+      recipient,
       summary: `${n} tallos${ribbon ? ', lazo ' + RIBBONS.find((r) => r.id === ribbon)!.name.toLowerCase() : ''}${note ? ' y tu nota' : ''} · ${money(total)}`,
     });
     setModal('done'); petals();
   };
 
+  // Siempre se confirma antes de enviar; el modal decide si hace falta cuenta.
   const send = () => {
     if (!n) { setShake((s) => s + 1); return say('Primero elige algunas flores 🌷'); }
-
-    if (user) finish(user); else setModal('auth');
+    setModal('auth');
   };
 
   const reset = () => { setStems([]); setRibbon(null); setNote(null); setHistory([]); setNewest(null); setModal(null); };
@@ -249,11 +250,11 @@ export default function Shop() {
       {flyers.map((f) => <FlyerView key={f.key} f={f} onDone={() => land(f)} />)}
 
       <NoteModal open={modal === 'note'} initial={note} onClose={() => setModal(null)} onSave={saveNote} />
-      <AuthModal open={modal === 'auth'} total={total} onClose={() => setModal(null)} onAuthed={finish} />
+      <CheckoutModal open={modal === 'auth'} total={total} lines={lines} signedIn={!!user} onClose={() => setModal(null)} onConfirm={finish} />
 
       <Modal open={modal === 'done'} onClose={reset} labelledBy="done-title" className="success">
         <div className="big" aria-hidden="true">💐</div>
-        <h2 id="done-title">¡Tu ramo va en camino!</h2>
+        <h2 id="done-title">{saved?.recipient ? `¡Tu ramo para ${saved.recipient} va en camino!` : '¡Tu ramo va en camino!'}</h2>
         <p className="sub">{saved?.summary}</p>
         <p className="sub">Lo encuentras cuando quieras en Mis ramos.</p>
         <div className="row center-row">

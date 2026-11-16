@@ -350,3 +350,60 @@ a { color: inherit; text-decoration: none; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+/* =========================================================
+   Estados de botones: hover (escritorio), presión (táctil) y foco
+   Estilo "botón de juguete": sombra sólida que se hunde al presionar
+   ========================================================= */
+.pill, .undo, .btn, .note-btn, .send, .close, .tabs button, .link, .ribbon, .mb-total {
+  transition: transform .15s ease, box-shadow .15s ease, background-color .2s ease, color .2s ease, opacity .2s ease;
+}
+.pill, .undo, .btn { box-shadow: 0 3px 0 rgba(31, 26, 58, .28); }
+.btn.alt { box-shadow: 0 3px 0 rgba(31, 26, 58, .2), inset 0 0 0 2px var(--ink); }
+.note-btn { box-shadow: 0 4px 0 var(--butter-d), 0 0 0 0 transparent; }
+
+@media (hover: hover) {
+  .pill:not(.on):hover { background: var(--cream); transform: translateY(-2px); box-shadow: 0 5px 0 rgba(31, 26, 58, .28); }
+  .music-btn:not(.on):hover { background: var(--tomato-d); color: #fff; }
+  .pill.on:hover { background: #2e2754; transform: translateY(-2px); }
+  .undo:not(:disabled):hover { background: var(--cream); transform: translateY(-2px); box-shadow: 0 5px 0 rgba(31, 26, 58, .28); }
+  .btn:not(:disabled):hover { background: #2e2754; transform: translateY(-2px); box-shadow: 0 5px 0 rgba(31, 26, 58, .35); }
+  .btn.alt:not(:disabled):hover { background: var(--cream); color: var(--ink); }
+  .btn.guest:not(:disabled):hover { background: var(--cobalt-d); }
+  .note-btn:hover { background: #fff; transform: rotate(-1deg) translateY(-3px); box-shadow: 0 7px 0 var(--butter-d); }
+  .send:hover { filter: brightness(1.08); transform: translateY(-1px); box-shadow: 0 5px 0 #8f2312; }
+  .close:hover { background: var(--tomato); transform: rotate(90deg); }
+  .tabs button[aria-selected="false"]:hover { background: rgba(255, 255, 255, .7); }
+  .link:hover { color: var(--tomato-d); }
+  .ribbon:not(:disabled):not(.on):hover { background: rgba(255, 255, 255, .45); }
+  .mb-total:hover .display { border-color: #8a7d63; }
+}
+
+/* Presión: se hunde (funciona igual en celular y escritorio) */
+.pill:active, .undo:not(:disabled):active, .btn:not(:disabled):active {
+  transform: translateY(2px); box-shadow: 0 1px 0 rgba(31, 26, 58, .28);
+}
+.note-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--butter-d); }
+.close:active { transform: scale(.9); }
+.tabs button:active, .mb-total:active { transform: scale(.97); }
+
+/* Foco con teclado: anillo cobalto bien visible */
+.pill:focus-visible, .undo:focus-visible, .btn:focus-visible, .note-btn:focus-visible, .send:focus-visible,
+.close:focus-visible, .tabs button:focus-visible, .ribbon:focus-visible, .item:focus-visible, .mb-total:focus-visible {
+  outline: 3px solid var(--cobalt); outline-offset: 3px;
+}
+
+/* Deshabilitados: sin efectos */
+.undo:disabled, .btn:disabled { box-shadow: none; }
+
+/* ---------- Modal de confirmación ---------- */
+.summary { list-style: none; margin: 14px 0 4px; padding: 12px 14px; background: rgba(255, 255, 255, .6); border-radius: 12px; font-size: 14px; }
+.summary li { display: flex; justify-content: space-between; gap: 12px; padding: 3px 0; }
+.summary .summary-total { margin-top: 6px; padding-top: 8px; border-top: 1px dashed rgba(31, 26, 58, .3); font-weight: 700; font-size: 16px; }
+.optional { font-weight: 400; opacity: .6; }
+.send-btn { margin-top: 16px; padding: 15px 22px; font-size: 16px; background: var(--tomato); box-shadow: 0 4px 0 #8f2312; }
+@media (hover: hover) { .send-btn:not(:disabled):hover { background: var(--tomato-d); box-shadow: 0 6px 0 #8f2312; } }
+.send-btn:not(:disabled):active { box-shadow: 0 1px 0 #8f2312; }
+.center-link { display: block; margin: 12px auto 0; text-align: center; }
+.email-box { margin-top: 16px; padding-top: 14px; border-top: 1px solid rgba(31, 26, 58, .15); }
+.email-box form .btn { margin-top: 14px; }

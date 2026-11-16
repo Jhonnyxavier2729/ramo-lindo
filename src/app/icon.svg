@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Logo Ramo Lindo: flor crema sobre la pared cobalto y el mostrador tomate -->
+  <defs>
+    <clipPath id="tile"><rect width="64" height="64" rx="16"/></clipPath>
+  </defs>
+  <g clip-path="url(#tile)">
+    <rect width="64" height="64" fill="#3455db"/>
+    <rect y="46" width="64" height="18" fill="#e8472f"/>
+    <rect y="46" width="64" height="3" fill="#c4351f"/>
+  </g>
+  <path d="M32 33c0 7-1 12-3 16" stroke="#4f9a3d" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+  <path d="M31 42c-5-1-9-4-10-8 5 0 9 3 10 8z" fill="#4f9a3d"/>
+  <g transform="translate(32 24)">
+    <g fill="#fff4e6">
+      <ellipse cy="-9.5" rx="7" ry="10"/>
+      <ellipse cy="-9.5" rx="7" ry="10" transform="rotate(72)"/>
+      <ellipse cy="-9.5" rx="7" ry="10" transform="rotate(144)"/>
+      <ellipse cy="-9.5" rx="7" ry="10" transform="rotate(216)"/>
+      <ellipse cy="-9.5" rx="7" ry="10" transform="rotate(288)"/>
+    </g>
+    <circle r="6.5" fill="#ffd76a"/>
+    <circle r="3" fill="#e8472f"/>
+  </g>
+</svg>
