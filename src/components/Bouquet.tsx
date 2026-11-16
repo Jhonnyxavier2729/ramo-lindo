@@ -13,8 +13,14 @@ const SLOTS = [0, -12, 12, -24, 24, -6, 6, -18, 18, -32, 32, -3, 3, -28, 28];
 
 function StemView({ stem, i, isNew }: { stem: Omit<Stem, 'key'>; i: number; isNew: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
+  const stalkRef = useRef<HTMLSpanElement>(null);
+  const popRef = useRef<HTMLSpanElement>(null);
+  // Primero crece el tallo desde el papel y después la flor aparece arriba con un "pop".
+  // (Antes se estiraba todo junto y la flor se veía aplastada o separada del tallo.)
   useGSAP(() => {
-    if (isNew) gsap.from(ref.current, { scaleY: 0.2, opacity: 0, duration: 0.7, ease: 'back.out(1.8)', transformOrigin: '50% 100%' });
+    if (!isNew) return;
+    gsap.from(stalkRef.current, { scaleY: 0, transformOrigin: '50% 100%', duration: 0.42, ease: 'power2.out' });
+    gsap.from(popRef.current, { scale: 0, transformOrigin: '50% 65%', duration: 0.45, delay: 0.3, ease: 'back.out(2.4)' });
   }, []);
   const slot = SLOTS[i % SLOTS.length];
   const style = {
@@ -26,27 +32,24 @@ function StemView({ stem, i, isNew }: { stem: Omit<Stem, 'key'>; i: number; isNe
   return (
     <div className="stem" style={style}>
       <div className="stem-inner" ref={ref}>
-        <span className="stalk" />
-        <span className={`head head-${stem.id}`}><FlowerHead id={stem.id} /></span>
+        <span className="stalk" ref={stalkRef} />
+        <span className={`head head-${stem.id}`}><span className="head-pop" ref={popRef}><FlowerHead id={stem.id} /></span></span>
       </div>
     </div>
   );
 }
 
-// Follaje (eucalipto) detrás de las flores: el ramo se ve lleno aunque tenga 1 o 2 tallos.
-const SPRIGS = [
-  { a: -30, L: 250 }, { a: 26, L: 240 }, { a: -12, L: 272 }, { a: 38, L: 215 }, { a: 8, L: 262 }, { a: -40, L: 210 },
+// Hojas de relleno: unas pocas hojas anchas que solo asoman por el borde del papel,
+// detrás de las flores (más bajas que cualquier flor, así nunca parecen ramas sueltas).
+const LEAVES = [
+  { a: -36, L: 182, dark: false }, { a: 34, L: 178, dark: true }, { a: -10, L: 196, dark: true }, { a: 16, L: 190, dark: false },
 ];
-function Sprig({ a, L }: { a: number; L: number }) {
-  const leaves = [];
-  for (let t = 0.5, i = 0; t < 0.99; t += 0.075, i++) {
-    const y = L * (1 - t), side = i % 2 ? 1 : -1;
-    leaves.push(<ellipse key={i} cx={30 + side * 9} cy={y} rx={11 - t * 3} ry={8.5 - t * 2} fill={i % 3 ? '#6fa88d' : '#5b977b'} transform={`rotate(${side * 25} ${30 + side * 9} ${y})`} />);
-  }
+function Leaf({ a, L, dark }: { a: number; L: number; dark: boolean }) {
   return (
-    <svg className="sprig" style={{ '--a': `${a}deg`, height: L } as CSSProperties} viewBox={`0 0 60 ${L}`} aria-hidden="true">
-      <path d={`M30 ${L}Q27 ${L / 2} 30 6`} stroke="#4e8a6c" strokeWidth="3" fill="none" strokeLinecap="round" />
-      {leaves}
+    <svg className="leaf" style={{ '--a': `${a}deg`, height: L } as CSSProperties} viewBox={`0 0 40 ${L}`} aria-hidden="true">
+      <path d={`M20 ${L}V66`} stroke="#3f8a35" strokeWidth="3" strokeLinecap="round" />
+      <path d="M20 70C2 54 3 18 20 2c17 16 18 52 0 68Z" fill={dark ? '#3f8a35' : '#5aa646'} />
+      <path d="M20 66V10" stroke="#2f6b2c" strokeWidth="1.4" opacity=".5" />
     </svg>
   );
 }
@@ -80,7 +83,7 @@ export function Bouquet({
         <path d="M18 34 140 0l122 26-110 152h-24Z" fill="#b39cf5" />
       </svg>
       <div className="stems">
-        {stems.length > 0 && SPRIGS.slice(0, Math.min(SPRIGS.length, 2 + Math.ceil(stems.length / 2))).map((s, i) => <Sprig key={i} {...s} />)}
+        {stems.length > 0 && LEAVES.slice(0, stems.length > 4 ? 4 : 3).map((l, i) => <Leaf key={i} {...l} />)}
         {stems.map((s, i) => <StemView key={s.key ?? i} stem={s} i={i} isNew={!!newestKey && s.key === newestKey} />)}
       </div>
       {note && <div className="tucked"><NoteCard note={note} /></div>}

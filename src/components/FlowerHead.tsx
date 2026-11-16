@@ -96,7 +96,7 @@ export function FlowerHead({ id, className }: { id: FlowerId; className?: string
   const Comp = MAP[id];
   return (
     <svg className={className} viewBox="-50 -50 100 100" aria-hidden="true" overflow="visible">
-      {inline ? <Comp /> : <use href={`#fh-${id}`} />}
+      {inline ? <Comp /> : <use href={`#fh-${id}`} x={-50} y={-50} width={100} height={100} />}
     </svg>
   );
 }
