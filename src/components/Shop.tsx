@@ -18,6 +18,9 @@ import { NoteModal } from './NoteModal';
 import { CheckoutModal } from './AuthModal';
 import { Modal } from './Modal';
 import { Wall } from './Wall';
+import { DemoNotice } from './DemoNotice';
+import { ShareModal } from './ShareModal';
+import type { ShareData } from './ShareCard';
 
 gsap.registerPlugin(useGSAP);
 
@@ -61,7 +64,9 @@ export default function Shop() {
   const [flyers, setFlyers] = useState<Flyer[]>([]);
   const [newest, setNewest] = useState<string | null>(null);
   const [music, setMusicOn] = useState(false);
-  const [modal, setModal] = useState<null | 'note' | 'auth' | 'done' | 'how'>(null);
+  const [modal, setModal] = useState<null | 'note' | 'auth' | 'done' | 'how' | 'share'>(null);
+  const [shareData, setShareData] = useState<ShareData | null>(null);
+  const [shareBack, setShareBack] = useState<null | 'done'>(null);
   const [user, setUser] = useState<string | null>(null);
   const [saved, setSaved] = useState<{ mode: 'cloud' | 'demo'; summary: string; recipient: string } | null>(null);
   const [toast, setToast] = useState('');
@@ -158,6 +163,14 @@ export default function Shop() {
 
   const reset = () => { setStems([]); setRibbon(null); setNote(null); setHistory([]); setNewest(null); setModal(null); };
 
+  // Exportar: se toma una "foto" del ramo actual para que no cambie mientras se comparte.
+  const openShare = (from: null | 'done') => {
+    if (!n) return say('Primero elige algunas flores 🌷');
+    setShareData({ stems: stems.map(({ id, j, k }) => ({ id, j, k })), ribbon, note, recipient: from ? saved?.recipient ?? '' : '', total });
+    setShareBack(from);
+    setModal('share');
+  };
+
   // La música arranca apagada (los navegadores bloquean el audio automático);
   // el botón late suavemente hasta que el usuario lo prueba una vez.
   const [musicTried, setMusicTried] = useState(false);
@@ -223,7 +236,10 @@ export default function Shop() {
             </ol>
             <Bouquet stems={stems} ribbon={ribbon} note={note} newestKey={newest} innerRef={bouquetRef} />
             <p className="hint" aria-live="polite">{hint}</p>
-            <button className="undo" onClick={undo} disabled={!history.length}>↶ Deshacer</button>
+            <div className="center-actions">
+              <button className="undo" onClick={undo} disabled={!history.length}>↶ Deshacer</button>
+              <button className="undo export" onClick={() => openShare(null)} disabled={!n}>⤴ Exportar ramo</button>
+            </div>
           </section>
 
           <section className="side">
@@ -261,6 +277,9 @@ export default function Shop() {
           <Link className="btn alt" href="/mis-ramos">Ver mis ramos</Link>
           <button className="btn" onClick={reset}>Armar otro ramo</button>
         </div>
+        <div className="row center-row">
+          <button className="btn wide send-btn" onClick={() => openShare('done')}>⤴ Exportar o compartir mi ramo</button>
+        </div>
       </Modal>
 
       <Modal open={modal === 'how'} onClose={() => setModal(null)} labelledBy="how-title" className="howto">
@@ -272,6 +291,9 @@ export default function Shop() {
           <li>Presiona <b>ENVIAR FLORES</b> en la caja registradora.</li>
         </ol>
       </Modal>
+
+      <ShareModal open={modal === 'share'} data={shareData} onClose={() => setModal(shareBack)} />
+      <DemoNotice />
 
       <div className={`toast ${toast ? 'show' : ''}`} role="status">{toast}</div>
     </div>
