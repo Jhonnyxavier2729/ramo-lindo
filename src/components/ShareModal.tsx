@@ -57,7 +57,7 @@ export function ShareModal({ open, data, onClose }: { open: boolean; data: Share
   const save = () => { if (blob) { download(blob); setMsg('Imagen descargada ✓'); } };
   const copy = async () => {
     if (!blob) return;
-    try { await copyImage(blob); setMsg('Imagen copiada ✓ Pégala con Ctrl+V en WhatsApp Web, correo o donde quieras.'); }
+    try { await copyImage(blob); setMsg('Imagen copiada ✓'); }
     catch { setMsg('Tu navegador no dejó copiar la imagen. Descárgala.'); }
   };
   const whatsapp = () => {
